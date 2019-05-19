@@ -1,10 +1,7 @@
 # LatexEditor
 
 Can be installed with 
-"""
-pip install .
-"""
+```pip install .```
+
 And then you can open app with
-"""
-latex-editor
-"""
+```latex-editor```
