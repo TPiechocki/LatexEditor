@@ -231,8 +231,11 @@ class Main(QtWidgets.QMainWindow):
             return
 
         """ create with basic template manager """
+        self.actual_file = ""
         new_doc = Main(self)
         new_doc.show()
+
+        new_doc.text.clear()
 
         new_doc.text.insertPlainText("\documentclass{" + document_class.currentText() + "}\n\n")
         for it in packages:
@@ -322,6 +325,10 @@ class Main(QtWidgets.QMainWindow):
                     error.exec_()
 
                 else:   # if pdf file was created
+                    """ second time command for proper table of contents etc. """
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+                    output, error = process.communicate(timeout=10)
+
                     basename = os.path.basename(self.actual_file)
                     pdfname = "./" + os.path.splitext(basename)[0] + ".pdf"
                     pdfdest = os.path.splitext(self.actual_file)[0] + ".pdf"
@@ -331,12 +338,6 @@ class Main(QtWidgets.QMainWindow):
                 """ check if tex file is in the program location """
                 texfile = glob.glob("./" + os.path.splitext(basename)[0] + ".tex")
                 if texfile:
-                    error = QtWidgets.QErrorMessage()
-                    error.setWindowTitle("Błąd Latex")
-                    error.showMessage("Plik nie powinien znajdować się w tym samym folderze co program."
-                                      "Pliki tymczasowe nie zostaną usunięte.")
-                    error.exec_()
-
                     return
 
                 """ if program directory is clear of tex file, remove temporary files """
